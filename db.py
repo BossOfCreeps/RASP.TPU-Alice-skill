@@ -15,7 +15,7 @@ def insert(task: tuple):
     conn.commit()
 
 
-def select():
+def select_all():
     """
     Query all rows in the table
     :return: rows in table
@@ -25,6 +25,18 @@ def select():
     cur.execute(f"SELECT * FROM {DB_GROUPS_TABLE}")
     rows = cur.fetchall()
     return rows
+
+
+def select_group(group):
+    """
+    Query all rows in the table
+    :return: rows in table
+    """
+    conn = sqlite3.connect(DB_FILE)
+    cur = conn.cursor()
+    cur.execute(f"SELECT * FROM {DB_GROUPS_TABLE} WHERE {DB_GROUPS_NAME}='{group}'")
+    rows = cur.fetchall()
+    return rows[0][1]
 
 
 def delete():

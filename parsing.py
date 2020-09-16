@@ -1,18 +1,20 @@
 import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
 
-from constants import RASP_TPU_SCHOOLS_CLASS, RASP_TPU_COURSE_CLASS, RASP_TPU_BASE, RASP_TPU_GROUP_CLASS
-from db import insert, delete
+from constants import RASP_TPU_SCHOOLS_CLASS, RASP_TPU_COURSE_CLASS, RASP_TPU_BASE, RASP_TPU_GROUP_CLASS, \
+    RASP_TPU_LESSON_TABLE_CLASS
+from db import insert, delete, select_group
 
 
-def parse():
+def parse_full():
     """
     Parse group names and links from rasp.tpu.ru, delete previous records and update them
     :return:
     """
 
     # Parse school's links
-    soup = BeautifulSoup(requests.get(RASP_TPU_BASE).text, "lxml")
+    soup = BeautifulSoup(requests.get(RASP_TPU_BASE).text, "html.parser")
     schools = (item["href"] for item in soup.find_all("a", class_=RASP_TPU_SCHOOLS_CLASS))
 
     # Parse course's links
@@ -35,3 +37,34 @@ def parse():
     # Insert new values to table
     for name, link in groups.items():
         insert((name.replace("-", ""), link))
+
+
+def parse_rasp(group, day, time):
+    """
+    Parse lessons page
+
+    :param group: group's name (without " " and "-") in upper register in russian
+    :param day: number of day (0 - monday ... 5 - saturday)
+    :param time: number of time 0...6 in LESSONS_TIME
+    :return: text to speech
+    """
+
+    # Get chrome webdriver
+    browser = webdriver.Chrome()
+    # Open them
+    browser.get(select_group(group))
+    # Parse page to BS
+    soup = BeautifulSoup(browser.page_source, "lxml")
+    # Close browser
+    browser.close()
+
+    # Parse main table to matrix (list of lists)
+    data = []
+    for row in soup.find('table', attrs={'class': RASP_TPU_LESSON_TABLE_CLASS}).find('tbody').find_all('tr'):
+        cols = [ele for ele in row.find_all('td')]
+        data.append([ele for ele in cols if ele])  # Get rid of empty values
+    # Transpose them and convert to tuple of tuples
+    data = tuple(zip(*data))
+
+    # Return value
+    return data[day + 1][time].text.replace("\n\n", "\n").rstrip()
