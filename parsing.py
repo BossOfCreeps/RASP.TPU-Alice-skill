@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -7,7 +9,7 @@ from constants import RASP_TPU_SCHOOLS_CLASS, RASP_TPU_COURSE_CLASS, RASP_TPU_BA
 from db import insert, delete, select_group
 
 
-def parse_full():
+def parse_all_groups():
     """
     Parse group names and links from rasp.tpu.ru, delete previous records and update them
     :return:
@@ -36,7 +38,7 @@ def parse_full():
     delete()
     # Insert new values to table
     for name, link in groups.items():
-        insert((name.replace("-", ""), link))
+        insert(name.replace("-", ""), link[:link.find("/", link.find("gruppa"))])
 
 
 def parse_rasp(group, day, time):
@@ -52,7 +54,7 @@ def parse_rasp(group, day, time):
     # Get chrome webdriver
     browser = webdriver.Chrome()
     # Open them
-    browser.get(select_group(group))
+    browser.get(select_group(group)+get_cur_page_params())
     # Parse page to BS
     soup = BeautifulSoup(browser.page_source, "lxml")
     # Close browser
@@ -68,3 +70,12 @@ def parse_rasp(group, day, time):
 
     # Return value
     return data[day + 1][time].text.replace("\n\n", "\n").rstrip()
+
+
+def get_cur_page_params():
+    soup = BeautifulSoup(requests.get(RASP_TPU_BASE).text, "html.parser")
+    school = soup.find("a", class_=RASP_TPU_SCHOOLS_CLASS)["href"]
+
+    soup = BeautifulSoup(requests.get(school).text, 'lxml')
+    link = soup.find("a", class_=RASP_TPU_GROUP_CLASS)["href"]
+    return link[link.find("/", link.find("gruppa")):]
