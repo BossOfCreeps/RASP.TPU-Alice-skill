@@ -1,7 +1,7 @@
 import sqlite3
 
 from constants import DB_FILE, DB_GROUPS_TABLE, DB_GROUPS_NAME, DB_GROUPS_LINK, DB_USERS_TABLE, DB_USERS_ID, \
-    DB_USERS_GROUP
+    DB_USERS_GROUP, DB_LESSONS_TABLE, DB_LESSONS_NAME, DB_LESSONS_DAY, DB_LESSONS_TIME, DB_LESSONS_RASP
 
 
 def insert(name: str, link: str):
@@ -98,3 +98,16 @@ def is_group(group: str) -> bool:
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor().execute(f"SELECT * FROM {DB_GROUPS_TABLE} WHERE {DB_GROUPS_NAME}='{group}'")
     return bool(cur.fetchall())
+
+
+def insert_lesson(name: str, day: int, time: int, rasp: str):
+    conn = sqlite3.connect(DB_FILE)
+    conn.cursor().execute(f"INSERT INTO {DB_LESSONS_TABLE}({DB_LESSONS_NAME},{DB_LESSONS_DAY},{DB_LESSONS_TIME},"
+                          f"{DB_LESSONS_RASP}) VALUES('{name}','{day}','{time}','{rasp}')")
+    conn.commit()
+
+
+def delete_lesson(name: str):
+    conn = sqlite3.connect(DB_FILE)
+    conn.cursor().execute(f"DELETE FROM {DB_LESSONS_TABLE} WHERE name='{name}'")
+    conn.commit()

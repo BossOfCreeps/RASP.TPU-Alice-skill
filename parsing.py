@@ -1,4 +1,6 @@
-from urllib.parse import urlparse
+import os
+from datetime import datetime
+from pprint import pprint
 
 import requests
 from bs4 import BeautifulSoup
@@ -6,7 +8,8 @@ from selenium import webdriver
 
 from constants import RASP_TPU_SCHOOLS_CLASS, RASP_TPU_COURSE_CLASS, RASP_TPU_BASE, RASP_TPU_GROUP_CLASS, \
     RASP_TPU_LESSON_TABLE_CLASS
-from db import insert, delete, select_group
+from db import insert, delete
+from ics import get_lesson
 
 
 def parse_all_groups():
@@ -41,20 +44,17 @@ def parse_all_groups():
         insert(name.replace("-", ""), link[:link.find("/", link.find("gruppa"))])
 
 
-def parse_rasp(group, day, time):
+def parse_rasp(link):
     """
     Parse lessons page
 
-    :param group: group's name (without " " and "-") in upper register in russian
-    :param day: number of day (0 - monday ... 5 - saturday)
-    :param time: number of time 0...6 in LESSONS_TIME
-    :return: text to speech
+    :param link: link to rasp
+    :return: matrix with rasp
     """
-
     # Get chrome webdriver
-    browser = webdriver.Chrome()
+    browser = webdriver.Chrome(executable_path=r"C:\RASP.TPU-Alice-skill\chromedriver.exe")
     # Open them
-    browser.get(select_group(group)+get_cur_page_params())
+    browser.get(link)
     # Parse page to BS
     soup = BeautifulSoup(browser.page_source, "lxml")
     # Close browser
@@ -65,17 +65,32 @@ def parse_rasp(group, day, time):
     for row in soup.find('table', attrs={'class': RASP_TPU_LESSON_TABLE_CLASS}).find('tbody').find_all('tr'):
         cols = [ele for ele in row.find_all('td')]
         data.append([ele for ele in cols if ele])  # Get rid of empty values
-    # Transpose them and convert to tuple of tuples
-    data = tuple(zip(*data))
 
-    # Return value
-    return data[day + 1][time].text.replace("\n\n", "\n").rstrip()
+    # Transpose them, convert to tuple of tuples and return
+    return tuple(zip(*data))
 
 
 def get_cur_page_params():
     soup = BeautifulSoup(requests.get(RASP_TPU_BASE).text, "html.parser")
     school = soup.find("a", class_=RASP_TPU_SCHOOLS_CLASS)["href"]
-
     soup = BeautifulSoup(requests.get(school).text, 'lxml')
     link = soup.find("a", class_=RASP_TPU_GROUP_CLASS)["href"]
     return link[link.find("/", link.find("gruppa")):]
+
+
+def parse_ics(link, date, time):
+    params = get_cur_page_params()
+    year = params[:6]
+    view = params[params.rfind("/"):]
+    week_param = datetime.now().date().isocalendar()[1] - int(params[len(year):-len(view)])
+    week = str(date.isocalendar()[1] - week_param)
+    print(date, time, link + year + week + view)
+    soup = BeautifulSoup(requests.get(link + year + week + view).text, "html.parser")
+    ics_link = RASP_TPU_BASE + soup.find("div", class_="heading-text").find("a")["href"]
+    file = r"C:\RASP.TPU-Alice-skill\facebook.ics"
+    open(file, 'wb').write(requests.get(ics_link, allow_redirects=True).content)
+    return get_lesson(file, date, time)
+
+
+if __name__ == '__main__':
+    pprint(parse_rasp("https://rasp.tpu.ru/gruppa_35397/2020/3/view.html"))

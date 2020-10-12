@@ -11,5 +11,10 @@ DB_GROUPS_LINK = "link"
 DB_USERS_TABLE = "users"
 DB_USERS_ID = "id"
 DB_USERS_GROUP = "group_"
+DB_LESSONS_TABLE = "lessons"
+DB_LESSONS_NAME = "name"
+DB_LESSONS_DAY = "day"
+DB_LESSONS_TIME = "time"
+DB_LESSONS_RASP = "rasp"
 
 LESSONS_TIME = ["08:30-10:05", "10:25-12:00", "12:40-14:15", "14:35-16:10", "16:30-18:05", "18:25-20:00", "20:20-21:55"]
