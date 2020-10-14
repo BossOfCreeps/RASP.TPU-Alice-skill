@@ -22,8 +22,9 @@ def update_groups():
 @app.route("/", methods=['POST'])
 def main():
     request = flask.request.json
+    print(request)
     user = request['session']['user_id']
-    text = request["request"]["original_utterance"]
+    text = request["request"]["command"]
 
     if isFamiliar(user):
         group = getGroup(user)
@@ -46,4 +47,4 @@ def main():
 
 
 if __name__ == '__main__':
-    app.run("0.0.0.0", 5000, ssl_context=('pem.full', 'pem.priv'))
+    app.run("0.0.0.0", 5001, ssl_context=('pem.full', 'pem.priv'))
