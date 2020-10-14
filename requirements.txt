@@ -1,7 +1,16 @@
+<<<<<<< HEAD
 Flask==1.1.2
 beautifulsoup4==4.9.1
 requests==2.24.0
 selenium==3.141.0
 transliterate==1.10.2
 DateTime==4.3
+=======
+Flask==1.1.2
+beautifulsoup4==4.9.1
+requests==2.24.0
+selenium==3.141.0
+transliterate==1.10.2
+DateTime==4.3
+>>>>>>> 8a05d9861055eb6edb00f5bb2f6d1cb4956d50b8
 icalendar==4.0.7
