@@ -3,11 +3,12 @@ from datetime import time
 ASK_GROUP_TEXT = "Здравствуйте. Мы не знакомы. Скажите, пожалуйста вашу группу."
 ERROR_GROUP_TEXT = "Извините, но группы {} не существует"
 SET_GROUP_TEXT = "Замечательно. Установлена группа {}"
-SHOW_GROUP_TEXT = "Здравствуйте. Ваша группа {}"
+SHOW_GROUP_TEXT = "Здравствуйте. Ваша группа: {}"
 DATE_ERROR_TEXT = "Извините, но я не могу распознать дату"
 NO_RASP = "Занятий нет"
 NUMBER_ERROR_TEXT = "Извините, но я не могу распознать номер пары"
 WEEK_ERROR_TEXT = "Извините, но я могу работать только с текущей неделей и со следующей"
+SUNDAY_ERROR_TEXT = "По воскресеньям мы не учимся"
 
 DB_FILE = r"db.sqlite3"
 DB_USERS_TABLE = "users"
