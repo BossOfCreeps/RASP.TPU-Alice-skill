@@ -1,4 +1,5 @@
 import json
+import os
 from threading import Thread
 
 import flask
@@ -22,14 +23,12 @@ def update_groups():
 @app.route("/", methods=['POST'])
 def main():
     request = flask.request.json
-    print(request)
     user = request['session']['user_id']
     text = request["request"]["command"]
 
     if isFamiliar(user):
         group = getGroup(user)
         if firstMessage(text):
-            Thread(target=backupRasp, args=(group,)).start()
             return showGroup(request, group)
         else:
             return rasp(request, group)
@@ -40,11 +39,11 @@ def main():
             group = groupFromText(text)
             if isGroup(group):
                 setGroup(user, group)
-                Thread(target=backupRasp, args=(group,)).start()
                 return setGroupMessage(request, group)
             else:
                 return errorGroup(request, group)
 
 
 if __name__ == '__main__':
+    os.chdir(r"C:\RASP.TPU-Alice-skill")
     app.run("0.0.0.0", 5001, ssl_context=('pem.full', 'pem.priv'))
