@@ -1,3 +1,4 @@
 pem.full
 pem.priv
+/lib/__pycache__/
 /.idea/
