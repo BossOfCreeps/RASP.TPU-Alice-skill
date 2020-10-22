@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 from bs4 import BeautifulSoup
@@ -5,7 +6,6 @@ import requests
 from transliterate import translit
 
 from lib.constants import RASP_TPU_GROUP_CLASS, RASP_TPU_SCHOOLS_CLASS, RASP_TPU_BASE
-from lib.db import getGroupLink
 
 
 def firstMessage(text):
@@ -14,6 +14,10 @@ def firstMessage(text):
 
 def groupFromText(text):
     return translit(str(text).upper().replace(" ", "").replace("-", ""), "ru")
+
+
+def getGroupLink(group):
+    return "https://rasp.tpu.ru/gruppa_{}".format(json.load(open("getGruppa.json"))[group])
 
 
 def getCurrentLink(group, date_):

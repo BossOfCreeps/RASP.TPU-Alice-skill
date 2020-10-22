@@ -1,23 +1,14 @@
-import json
 import os
-from threading import Thread
+from sys import platform
 
 import flask
 
-from lib.backupRasp import backupRasp
 from lib.db import isFamiliar, isGroup, setGroup, getGroup
 from lib.lib import firstMessage, groupFromText
 from lib.rasp import rasp
 from lib.returns import askGroup, errorGroup, setGroupMessage, showGroup
-from lib.updateGroups import updateGroups
 
 app = flask.Flask(__name__)
-
-
-@app.route("/update_groups", methods=['GET'])
-def update_groups():
-    updateGroups()
-    return "OK"
 
 
 @app.route("/", methods=['POST'])
@@ -45,5 +36,6 @@ def main():
 
 
 if __name__ == '__main__':
-    os.chdir(r"C:\RASP.TPU-Alice-skill")
-    app.run("0.0.0.0", 5001, ssl_context=('pem.full', 'pem.priv'))
+    if platform == "win32":
+        os.chdir(r"C:\RASP.TPU-Alice-skill")
+    app.run("0.0.0.0", 5000, ssl_context='adhoc')

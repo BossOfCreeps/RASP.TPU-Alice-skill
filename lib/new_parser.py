@@ -1,7 +1,6 @@
-from datetime import datetime, timedelta
-from pprint import pprint
-
 from datetime import date
+from datetime import datetime, timedelta
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -11,7 +10,8 @@ from lib.lib import getCurrentLink
 
 
 def get_tomsk_time(i):
-    return (datetime.combine(date.today(), dict_times[i]) + timedelta(hours=7)).time()
+    time_ = (datetime.combine(date.today(), dict_times[i]) + timedelta(hours=7)).time()
+    return time_.strftime("%I:%M")
 
 
 def parse_element(ele, key):
@@ -24,6 +24,8 @@ def parse_element(ele, key):
         for div in ele.find_all("div"):
             if div.find("span"):
                 out += decrypt(div.find("span")["data-title"], key) + "\n"
+                if div.find("b"):
+                    out += div.find("b")["title"] + "\n"
             elif div.find("a") and div.text[0:2] == "к.":
                 out += div.text.replace("к.", "корпус").replace("ауд.", "аудитория") + "\n"
             elif div.find("a") and div.text[0:2] != "к." and not div.find("br"):
@@ -36,7 +38,6 @@ def parse_element(ele, key):
 
 
 def parse(group, date_, number_):
-    print(date_, number_)
     link = getCurrentLink(group, date_)
     soup = BeautifulSoup(requests.get(link).text, "lxml")
 

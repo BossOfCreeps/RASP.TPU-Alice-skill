@@ -11,7 +11,3 @@ def decrypt(data, key):
 
         new_str += unichr(char)
     return new_str
-
-
-if __name__ == '__main__':
-    print(decrypt("0bfRh9CoEdG80KvQmNGz0IzRldG00YA=", "Pwi1FhXCNk4p-S72"))
