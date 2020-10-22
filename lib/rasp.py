@@ -1,9 +1,7 @@
 from datetime import datetime, timedelta, date
 
-from lib.db import getFromDB
-from lib.ics import getICS
 from lib.new_parser import parse
-from lib.returns import dateError, showRasp, numberError, weekError, sundayError
+from lib.returns import dateError, showRasp, numberError, sundayError
 
 
 def rasp(request, group):
@@ -28,9 +26,6 @@ def rasp(request, group):
             return sundayError(request)
     except KeyError:
         return dateError(request)
-
-    print(Yandex_DateTime)
-    print(Yandex_Numbers)
 
     Yandex_Number_temp = []
     for Yandex_Number in Yandex_Numbers:
