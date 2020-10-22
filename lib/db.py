@@ -1,4 +1,8 @@
+import json
 import sqlite3
+from datetime import datetime
+
+import requests
 
 from lib.constants import DB_FILE, DB_USERS_TABLE, DB_GROUPS_TABLE, DB_GROUPS_NAME, DB_USERS_ID, DB_USERS_GROUP, \
     DB_LESSONS_TABLE, DB_LESSONS_DAY, DB_LESSONS_TIME, DB_LESSONS_RASP, DB_LESSONS_NAME, dict_times
@@ -25,12 +29,6 @@ def setGroup(user, group):
 def getGroup(user):
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor().execute(f"SELECT * FROM {DB_USERS_TABLE} WHERE {DB_USERS_ID}='{user}'")
-    return cur.fetchall()[0][1]
-
-
-def getGroupLink(group):
-    conn = sqlite3.connect(DB_FILE)
-    cur = conn.cursor().execute(f"SELECT * FROM {DB_GROUPS_TABLE} WHERE {DB_GROUPS_NAME}='{group}'")
     return cur.fetchall()[0][1]
 
 

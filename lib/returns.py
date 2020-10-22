@@ -48,5 +48,4 @@ def weekError(request):
 
 
 def showRasp(request, data):
-    print(data)
     return json.dumps(__get_response(request, data), ensure_ascii=False, indent=2)
