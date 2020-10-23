@@ -3,8 +3,8 @@ from sys import platform
 
 import flask
 
-from lib.db import isFamiliar, isGroup, setGroup, getGroup
-from lib.lib import firstMessage, groupFromText
+from lib.db import isFamiliar, setGroup, getGroup
+from lib.lib import firstMessage, groupFromText, isGroup
 from lib.rasp import rasp
 from lib.returns import askGroup, errorGroup, setGroupMessage, showGroup
 
@@ -38,4 +38,7 @@ def main():
 if __name__ == '__main__':
     if platform == "win32":
         os.chdir(r"C:\RASP.TPU-Alice-skill")
-    app.run("0.0.0.0", 5000, ssl_context='adhoc')
+        port = 5000
+    else:
+        port = 5001
+    app.run("0.0.0.0", port, ssl_context='adhoc')
