@@ -30,3 +30,7 @@ def getCurrentLink(group, date_):
     view = params[params.rfind("/"):]
     week = str(date_.isocalendar()[1] - datetime.now().date().isocalendar()[1] + int(params[len(year):-len(view)]))
     return getGroupLink(group) + year + week + view
+
+
+def isGroup(group):
+    return group in dict(json.load(open("getGruppa.json"))).keys()

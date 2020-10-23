@@ -14,12 +14,6 @@ def isFamiliar(user):
     return bool(cur.fetchall())
 
 
-def isGroup(group):
-    conn = sqlite3.connect(DB_FILE)
-    cur = conn.cursor().execute(f"SELECT * FROM {DB_GROUPS_TABLE} WHERE {DB_GROUPS_NAME}='{group}'")
-    return bool(cur.fetchall())
-
-
 def setGroup(user, group):
     conn = sqlite3.connect(DB_FILE)
     conn.cursor().execute(f"INSERT INTO {DB_USERS_TABLE}({DB_USERS_ID},{DB_USERS_GROUP}) VALUES('{user}','{group}')")

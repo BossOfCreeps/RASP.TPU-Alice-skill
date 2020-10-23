@@ -20,15 +20,15 @@ def askGroup(request):
 
 
 def errorGroup(request, group):
-    return json.dumps(__get_response(request, ERROR_GROUP_TEXT.format(" ".join(group))), ensure_ascii=False, indent=2)
+    return json.dumps(__get_response(request, ERROR_GROUP_TEXT.format("".join(group))), ensure_ascii=False, indent=2)
 
 
 def setGroupMessage(request, group):
-    return json.dumps(__get_response(request, SET_GROUP_TEXT.format(" ".join(group))), ensure_ascii=False, indent=2)
+    return json.dumps(__get_response(request, SET_GROUP_TEXT.format("".join(group))), ensure_ascii=False, indent=2)
 
 
 def showGroup(request, group):
-    return json.dumps(__get_response(request, SHOW_GROUP_TEXT.format(" ".join(group))), ensure_ascii=False, indent=2)
+    return json.dumps(__get_response(request, SHOW_GROUP_TEXT.format("".join(group))), ensure_ascii=False, indent=2)
 
 
 def dateError(request):
